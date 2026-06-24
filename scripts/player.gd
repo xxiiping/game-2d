@@ -27,17 +27,17 @@ extends CharacterBody2D
 @export_group("Assist")
 @export var coyote_time := 0.1
 @export var jump_buffer_time := 0.1
-@export var wall_jump_buffer_time := 0.1
+@export var wall_jump_buffer_time := 0.1  ## 蹬墙跳输入缓冲（秒）；与地面 jump_buffer_time 独立。
 
 # --- 墙体（蹬墙跳/墙滑；与 Jump / Gravity 组平地跳参数独立）---
 @export_group("Wall")
-@export var wall_slide_max := 84.0
-@export var wall_slide_gravity := 240.0
-@export var wall_jump_velocity := -185.0
-@export var wall_jump_push := 155.0
-@export var wall_jump_velocity_min := -125.0
-@export var wall_jump_push_min := 105.0
-@export var wall_jump_input_lock := 0.1
+@export var wall_slide_max := 84.0  ## 墙滑时纵向速度上限（下落方向，px/s）。
+@export var wall_slide_gravity := 240.0  ## 墙滑时下落加速度（px/s²）。
+@export var wall_jump_velocity := -185.0  ## 蹬墙跳竖直起跳速度（有水平输入时）。
+@export var wall_jump_push := 155.0  ## 蹬墙跳水平推力（有水平输入时）；与竖直分量共同决定起跳角度。
+@export var wall_jump_velocity_min := -125.0  ## 蹬墙跳竖直起跳速度（无水平输入时）。
+@export var wall_jump_push_min := 105.0  ## 蹬墙跳水平推力（无水平输入时）。
+@export var wall_jump_input_lock := 0.1  ## 蹬墙跳后水平输入锁定时间（秒）。
 ## 离墙后仍可蹬墙跳的宽容时间；须先贴墙接触，离墙后才开始倒计时（与地面土狼同理）。
 ## 默认 12 帧 @60fps（0.2s）。
 @export var wall_coyote_time := 0.2
@@ -70,9 +70,9 @@ extends CharacterBody2D
 var _facing := 1
 var _coyote_timer := 0.0
 var _jump_buffer_timer := 0.0
-var _wall_jump_buffer_timer := 0.0
-var _wall_coyote_timer := 0.0
-var _last_wall_dir := 0
+var _wall_jump_buffer_timer := 0.0  ## 蹬墙跳输入缓冲剩余时间。
+var _wall_coyote_timer := 0.0  ## 墙土狼剩余时间：离墙后仍可蹬墙跳的窗口。
+var _last_wall_dir := 0  ## 最近贴墙方向：1 为右侧有墙，-1 为左侧有墙。
 var _input_lock_timer := 0.0
 var _dash_grav_lock_timer := 0.0
 var _dash_ctrl_lock_timer := 0.0
@@ -155,6 +155,7 @@ func _update_timers(delta: float, on_floor: bool) -> void:
 
 
 func _update_wall_contact(delta: float, on_floor: bool) -> void:
+	## 跟踪贴墙状态：贴墙时刷新墙土狼；下落贴墙时续期蹬墙跳缓冲以支持链式连跳。
 	if on_floor:
 		return
 	var wd := _wall_contact_dir()
@@ -238,9 +239,11 @@ func _do_wall_jump(input_x: float) -> bool:
 	if wd == 0:
 		return false
 	if absf(input_x) > 0.01:
+		# 有方向输入：大跳，起跳角度由 wall_jump_velocity / wall_jump_push 决定。
 		velocity.y = wall_jump_velocity
 		velocity.x = -wd * wall_jump_push
 	else:
+		# 无方向输入：小跳，仅提供脱离墙面的最小推力。
 		velocity.y = wall_jump_velocity_min
 		velocity.x = -wd * wall_jump_push_min
 	_input_lock_timer = wall_jump_input_lock
