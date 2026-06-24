@@ -15,7 +15,7 @@ extends CharacterBody2D
 ## 空中反向时的急刹减速（拉向 0），对齐参考的空中掉头手感。
 @export var air_turn_decel := 990.0
 
-# --- 跳跃与重力 ---
+# --- 跳跃与重力（平地跳；与 Wall 组蹬墙跳参数独立）---
 @export_group("Jump / Gravity")
 @export var jump_velocity := -192.0
 @export var rise_gravity := 633.6
@@ -27,18 +27,20 @@ extends CharacterBody2D
 @export_group("Assist")
 @export var coyote_time := 0.1
 @export var jump_buffer_time := 0.1
-@export var wall_jump_buffer_time := 0.05
+@export var wall_jump_buffer_time := 0.1
 
-# --- 墙体 ---
+# --- 墙体（蹬墙跳/墙滑；与 Jump / Gravity 组平地跳参数独立）---
 @export_group("Wall")
-@export var wall_slide_max := 105.0
-@export var wall_slide_gravity := 288.0
-@export var wall_jump_velocity := -135.0
-@export var wall_jump_push := 180.0
-@export var wall_jump_velocity_min := -90.0
-@export var wall_jump_push_min := 120.0
+@export var wall_slide_max := 84.0
+@export var wall_slide_gravity := 240.0
+@export var wall_jump_velocity := -185.0
+@export var wall_jump_push := 155.0
+@export var wall_jump_velocity_min := -125.0
+@export var wall_jump_push_min := 105.0
 @export var wall_jump_input_lock := 0.1
-@export var wall_check_dist := 3.0
+## 离墙后仍可蹬墙跳的宽容时间；须先贴墙接触，离墙后才开始倒计时（与地面土狼同理）。
+## 默认 12 帧 @60fps（0.2s）。
+@export var wall_coyote_time := 0.2
 
 # --- 冲刺 ---
 @export_group("Dash")
@@ -69,6 +71,8 @@ var _facing := 1
 var _coyote_timer := 0.0
 var _jump_buffer_timer := 0.0
 var _wall_jump_buffer_timer := 0.0
+var _wall_coyote_timer := 0.0
+var _last_wall_dir := 0
 var _input_lock_timer := 0.0
 var _dash_grav_lock_timer := 0.0
 var _dash_ctrl_lock_timer := 0.0
@@ -87,6 +91,7 @@ var _shake_time := 0.0
 func _physics_process(delta: float) -> void:
 	var on_floor := is_on_floor()
 	_update_timers(delta, on_floor)
+	_update_wall_contact(delta, on_floor)
 	_update_shake(delta)
 
 	var input_x := Input.get_axis("move_left", "move_right")
@@ -134,6 +139,8 @@ func _physics_process(delta: float) -> void:
 func _update_timers(delta: float, on_floor: bool) -> void:
 	if on_floor:
 		_coyote_timer = coyote_time
+		_wall_coyote_timer = 0.0
+		_last_wall_dir = 0
 		if _dash_grav_lock_timer <= 0.0:
 			_dashes_left = dash_count
 	else:
@@ -145,6 +152,20 @@ func _update_timers(delta: float, on_floor: bool) -> void:
 	_dash_ctrl_lock_timer = maxf(_dash_ctrl_lock_timer - delta, 0.0)
 	_dash_input_silence_timer = maxf(_dash_input_silence_timer - delta, 0.0)
 	_dash_active_timer = maxf(_dash_active_timer - delta, 0.0)
+
+
+func _update_wall_contact(delta: float, on_floor: bool) -> void:
+	if on_floor:
+		return
+	var wd := _wall_contact_dir()
+	if wd != 0:
+		_last_wall_dir = wd
+		_wall_coyote_timer = wall_coyote_time
+		# 下落贴墙时刷新蹬墙跳缓冲，便于连按跳跃键链式起跳。
+		if velocity.y > 0.0 and _wall_jump_buffer_timer > 0.0:
+			_wall_jump_buffer_timer = wall_jump_buffer_time
+	else:
+		_wall_coyote_timer = maxf(_wall_coyote_timer - delta, 0.0)
 
 
 func _process_gravity(delta: float, on_floor: bool) -> void:
@@ -173,9 +194,33 @@ func _process_horizontal(delta: float, on_floor: bool, input_x: float) -> void:
 func _process_wall_slide(delta: float, input_x: float) -> void:
 	if is_on_floor() or velocity.y <= 0.0:
 		return
-	var wd := _wall_dir()
-	if wd != 0 and int(sign(input_x)) == wd:
+	var wd := _wall_contact_dir()
+	if wd == 0:
+		return
+	if input_x != 0.0 and int(sign(input_x)) == wd:
 		velocity.y = move_toward(velocity.y, wall_slide_max, wall_slide_gravity * delta)
+
+
+## 当前可蹬墙跳的墙侧：贴墙时取碰撞法线；离墙后在墙土狼窗内用最近贴墙方向。
+func _wall_jump_side() -> int:
+	var wd := _wall_contact_dir()
+	if wd != 0:
+		return wd
+	if _wall_coyote_timer > 0.0 and _last_wall_dir != 0:
+		return _last_wall_dir
+	return 0
+
+
+## 贴墙接触方向：依赖 move_and_slide 的墙体碰撞，不用射线预探测。
+func _wall_contact_dir() -> int:
+	if not is_on_wall():
+		return 0
+	var nx := get_wall_normal().x
+	if nx > 0.01:
+		return -1
+	if nx < -0.01:
+		return 1
+	return 0
 
 
 ## 地面/土狼跳：消耗普通跳跃缓冲。
@@ -184,11 +229,12 @@ func _do_ground_jump() -> void:
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 	_wall_jump_buffer_timer = 0.0
+	_wall_coyote_timer = 0.0
 
 
-## 蹬墙跳：消耗独立的蹬墙缓冲，仅在贴墙时生效。
+## 蹬墙跳：消耗独立的蹬墙缓冲；须先贴墙，或离墙后处于墙土狼窗内。
 func _do_wall_jump(input_x: float) -> bool:
-	var wd := _wall_dir()
+	var wd := _wall_jump_side()
 	if wd == 0:
 		return false
 	if absf(input_x) > 0.01:
@@ -198,6 +244,7 @@ func _do_wall_jump(input_x: float) -> bool:
 		velocity.y = wall_jump_velocity_min
 		velocity.x = -wd * wall_jump_push_min
 	_input_lock_timer = wall_jump_input_lock
+	_wall_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 	_wall_jump_buffer_timer = 0.0
 	return true
@@ -293,15 +340,6 @@ func _corner_correct_horizontal(delta: float) -> void:
 			if not test_move(shifted, h_motion):
 				position.y += s * i
 				return
-
-
-## 检测紧贴的墙：返回 1（右侧有墙）/ -1（左侧有墙）/ 0（无）。
-func _wall_dir() -> int:
-	if test_move(global_transform, Vector2(wall_check_dist, 0.0)):
-		return 1
-	if test_move(global_transform, Vector2(-wall_check_dist, 0.0)):
-		return -1
-	return 0
 
 
 func _update_visual() -> void:
