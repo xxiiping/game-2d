@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://d0blw6txctf5n"]
+
+[ext_resource type="TileSet" path="res://assets/placeholder/tileset.tres" id="1_2djvx"]
+[ext_resource type="Script" path="res://scripts/level_builder.gd" id="2_uvc87"]
+[ext_resource type="PackedScene" uid="uid://kavskh3cdobu" path="res://scenes/player/player.tscn" id="3_qdh5e"]
+
+[node name="Level" type="Node2D" unique_id=27398389]
+
+[node name="TileMap" type="TileMapLayer" parent="." unique_id=1599785220]
+tile_set = ExtResource("1_2djvx")
+script = ExtResource("2_uvc87")
+
+[node name="Player" parent="." unique_id=91519178 instance=ExtResource("3_qdh5e")]
+position = Vector2(80, 128)

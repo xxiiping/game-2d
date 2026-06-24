@@ -1,0 +1,28 @@
+---
+description: Godot 项目开发工作流与 MCP 使用约定
+alwaysApply: true
+---
+
+# Godot 项目工作流
+
+## MCP 优先
+
+Godot 相关工作优先使用 `user-godot-ai` MCP，而非直接手改场景树或依赖猜测。
+
+1. **先连接编辑器**：每次会话开始或切换任务时，先调用 `session_activate`（或 `session_manage(op="list")` 确认可用会话后再激活）。
+2. **结构用 MCP**：场景节点创建/属性/层级/资源分配等结构操作，通过 MCP 工具完成（如 `scene_manage`、`node_manage`、`node_create`、`node_set_property` 等）。
+3. **脚本逻辑写文件**：GDScript 业务逻辑直接编辑 `.gd` 文件；用 `script_patch` / `filesystem_manage` 读写脚本，必要时再用 `script_attach` 挂到节点。
+
+## 原创与参考边界
+
+- **禁止**复制第三方游戏的源码、资源或逐行移植实现。
+- **Celeste** 仅作机制与设计参考（如手感、关卡节奏、能力设计思路），须用本项目自己的代码与资源独立实现。
+
+## 阶段验收
+
+每个开发阶段结束前必须执行：
+
+1. `project_run` — 运行项目验证
+2. `logs_read` — 读取日志，确认无报错或已处理已知问题
+
+未通过验收前，不视为该阶段完成。
