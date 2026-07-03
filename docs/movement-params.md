@@ -24,9 +24,9 @@
 
 ```
 player_movement_config.gd   定义字段 + 出厂默认 + 注释
-         ↓
+		 ↓
 player_default.tres         运行时权威数值（游戏读这个）
-         ↓
+		 ↓
 player.tscn (movement)  →  player.gd 读取 movement.xxx
 ```
 
