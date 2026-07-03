@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://resources/movement/player_default.tres" id="2_movement"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
-size = Vector2(8, 8)
+size = Vector2(16, 16)
 
 [node name="Player" type="CharacterBody2D" unique_id=91519178]
 script = ExtResource("1_dovo2")
