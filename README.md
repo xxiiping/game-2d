@@ -1,6 +1,6 @@
 # game-2d
 
-Godot 4.7 像素风 2D 平台游戏。核心移动为独立实现的 Celeste 风格手感（非第三方代码/素材移植）。
+Godot 4.7 像素风 2D 平台游戏。核心移动为独立实现（非第三方代码/素材移植）。
 
 ## 环境要求
 
@@ -14,12 +14,15 @@ Godot 4.7 像素风 2D 平台游戏。核心移动为独立实现的 Celeste 风
 
 ### 操作
 
-| 按键 | 动作 |
-|---|---|
-| A / D 或 ← → | 左右移动 |
-| W / S 或 ↑ ↓ | 上下（冲刺八向） |
-| Z 或 Space | 跳跃 |
-| J 或 Shift | 冲刺 |
+| ⌨ 键盘 | 🎮 PS5 手柄 | 动作 |
+|---|---|---|
+| A / D | 左摇杆 / 十字键 | 左右移动 |
+| W / S | 左摇杆 / 十字键 | 上下（冲刺八向） |
+| Space | × (Cross) | 跳跃 |
+| Shift | ○ (Circle) / R1 | 冲刺 |
+| R | 右摇杆按下 (R3) | 重新载入场景 |
+
+> 详细映射见 [docs/input-map.md](docs/input-map.md)
 
 ## 项目结构
 
@@ -32,7 +35,9 @@ game-2d/
 │   ├── player.gd
 │   └── resources/player_movement_config.gd
 ├── resources/movement/player_default.tres
-├── docs/movement-params.md      # 玩家移动数值与调参说明
+├── docs/
+│   ├── movement-params.md      # 玩家移动数值与调参说明
+│   └── input-map.md            # 输入映射（键盘 + 手柄）
 ├── assets/placeholder/
 └── addons/godot_ai/
 ```
@@ -51,6 +56,7 @@ game-2d/
 | 文档 | 内容 |
 |---|---|
 | [docs/movement-params.md](docs/movement-params.md) | 玩家移动：系统设计、调参流程、回归测试、变更记录 |
+| [docs/input-map.md](docs/input-map.md) | 输入映射：键盘 + PS5 手柄绑定 |
 
 移动逻辑在 `scripts/player.gd`；运行时数值来自 `resources/movement/player_default.tres`。字段定义与检查器注释见 `scripts/resources/player_movement_config.gd`。
 
@@ -66,4 +72,3 @@ game-2d/
 ## 许可与边界
 
 - 本项目代码与占位资源为原创实现
-- Celeste 仅作机制与手感设计参考，禁止复制其源码或素材

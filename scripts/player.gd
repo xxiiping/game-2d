@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-## Celeste 风格平台移动控制器。
+## 平台移动控制器。
 ## 机制为独立实现；移动数值从 PlayerMovementConfig 资源读取，逻辑与数据分离。
 
 @export var movement: PlayerMovementConfig = preload("res://resources/movement/player_default.tres")
@@ -43,6 +43,10 @@ func _physics_process(delta: float) -> void:
 
 	if Input.is_action_just_pressed("dash") and _can_dash():
 		_start_dash(cfg)
+
+	# R 键 / 右摇杆按下 → 重新载入场景
+	if Input.is_action_just_pressed("restart"):
+		get_tree().reload_current_scene()
 
 	var grav_locked := _dash_grav_lock_timer > 0.0
 	var ctrl_locked := _dash_ctrl_lock_timer > 0.0
