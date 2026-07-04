@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://10i1dw74s8nt"]
+
+[ext_resource type="Script" uid="uid://ci0ybpgk6jyo2" path="res://scripts/transition_zone.gd" id="1_v7u7n"]
+[ext_resource type="AudioStream" uid="uid://c18sn5gh702a" path="res://assets/audio/Anchor-1.ogg" id="2_c1knr"]
+[ext_resource type="AudioStream" uid="uid://bo883liqmtifv" path="res://assets/audio/Anchor-2.ogg" id="3_k3egx"]
+[ext_resource type="AudioStream" uid="uid://bqhtfaajbhoti" path="res://assets/audio/Anchor-3.ogg" id="4_yn3c0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c1knr"]
+size = Vector2(16, 16)
+
+[node name="TransitionZone" type="Area2D" unique_id=496628330]
+script = ExtResource("1_v7u7n")
+
+[node name="Shape" type="CollisionShape2D" parent="." unique_id=1613678825]
+shape = SubResource("RectangleShape2D_c1knr")
+
+[node name="Visual" type="ColorRect" parent="." unique_id=1097757692]
+z_index = -1
+offset_left = -7.9999995
+offset_top = -8.0
+offset_right = -7.914096
+offset_bottom = -7.905553
+scale = Vector2(186.25488, 169.40689)
+color = Color(0.3, 0.2, 0.8, 0.5)
+
+[node name="AnchorAudio" type="AudioStreamPlayer2D" parent="." unique_id=528394093]
+stream = ExtResource("2_c1knr")
+
+[node name="TriggerAudio" type="AudioStreamPlayer2D" parent="." unique_id=714626441]
+stream = ExtResource("3_k3egx")
+
+[node name="CountdownAudio" type="AudioStreamPlayer2D" parent="." unique_id=889890863]
+stream = ExtResource("4_yn3c0")

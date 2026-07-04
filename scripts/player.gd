@@ -22,11 +22,25 @@ var _shake_amp := Vector2.ZERO
 var _shake_dur := 0.0
 var _shake_time := 0.0
 
-@onready var _sprite: Sprite2D = $Sprite
+var frozen := false
+var _dash_dir := Vector2.ZERO  ## 记录最后一次冲刺方向，用于过渡区域检测
+
+@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _camera: Camera2D = $Camera2D
+@onready var _sfx_jump01: AudioStreamPlayer = $SFX_Jump01
+@onready var _sfx_jump02: AudioStreamPlayer = $SFX_Jump02
+@onready var _sfx_run01: AudioStreamPlayer = $SFX_Run01
+@onready var _sfx_run02: AudioStreamPlayer = $SFX_Run02
+@onready var _sfx_rush01: AudioStreamPlayer = $SFX_Rush01
+@onready var _sfx_rush02: AudioStreamPlayer = $SFX_Rush02
+
+var _run_step := 0  ## 交替跑步音效序号
+var _run_playing := false  ## 当前是否正在播放跑步音效
 
 
 func _physics_process(delta: float) -> void:
+	if frozen:
+		return
 	var cfg := movement
 	var on_floor := is_on_floor()
 	_update_timers(delta, on_floor, cfg)
@@ -71,7 +85,9 @@ func _physics_process(delta: float) -> void:
 	_corner_correct_horizontal(delta, cfg)
 
 	move_and_slide()
+	_update_animation(on_floor, input_x)
 	_update_visual()
+	_update_run_sfx(input_x, on_floor)
 
 
 func _update_timers(delta: float, on_floor: bool, cfg: PlayerMovementConfig) -> void:
@@ -164,6 +180,7 @@ func _do_ground_jump(cfg: PlayerMovementConfig) -> void:
 	_jump_buffer_timer = 0.0
 	_wall_jump_buffer_timer = 0.0
 	_wall_coyote_timer = 0.0
+	_sfx_jump01.play()
 
 
 func _do_wall_jump(input_x: float, cfg: PlayerMovementConfig) -> bool:
@@ -180,6 +197,7 @@ func _do_wall_jump(input_x: float, cfg: PlayerMovementConfig) -> bool:
 	_wall_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 	_wall_jump_buffer_timer = 0.0
+	_sfx_jump02.play()
 	return true
 
 
@@ -189,6 +207,7 @@ func _can_dash() -> bool:
 
 func _start_dash(cfg: PlayerMovementConfig) -> void:
 	var dir := _dash_direction()
+	_dash_dir = dir  ## 记录冲刺方向，供过渡区域检测（纯向下= 仅 y>0 且 x≈0）
 	var v := dir * cfg.dash_speed
 	if dir.y < 0.0:
 		v.y *= cfg.dash_up_scale
@@ -200,6 +219,11 @@ func _start_dash(cfg: PlayerMovementConfig) -> void:
 	_dashes_left -= 1
 	_start_shake(dir.abs() * cfg.dash_shake_amp, cfg.dash_shake_time)
 	_do_hitstop(cfg)
+	# 交替冲刺音效
+	if randi() % 2 == 0:
+		_sfx_rush01.play()
+	else:
+		_sfx_rush02.play()
 
 
 func _do_hitstop(cfg: PlayerMovementConfig) -> void:
@@ -270,5 +294,66 @@ func _corner_correct_horizontal(delta: float, cfg: PlayerMovementConfig) -> void
 
 
 func _update_visual() -> void:
-	if _facing != 0:
-		_sprite.flip_h = _facing < 0
+	## idle 资源朝左，朝右时 flip_h=true。跑步动画已匹配方向，flip_h=false。
+	if _sprite.animation == &"run_left" or _sprite.animation == &"run_right":
+		_sprite.flip_h = false
+	elif _facing != 0:
+		_sprite.flip_h = _facing > 0
+
+
+func _update_run_sfx(input_x: float, on_floor: bool) -> void:
+	## 按键按下且在地面 → 播放跑步音效；松键 → 停止。
+	var moving := on_floor and absf(input_x) > 0.1 and not frozen
+	if moving and not _run_playing:
+		_run_playing = true
+		_run_step += 1
+		if _run_step % 2 == 1:
+			_sfx_run01.play()
+		else:
+			_sfx_run02.play()
+	elif not moving and _run_playing:
+		_run_playing = false
+		_sfx_run01.stop()
+		_sfx_run02.stop()
+
+
+func _update_animation(on_floor: bool, input_x: float) -> void:
+	## 根据玩家状态切换动画。仅在动画变化时调用 play，避免每帧重置。
+	if frozen:
+		return
+	var target := &"idle"
+	if _dash_active_timer > 0.0:
+		target = &"dash"
+	elif on_floor:
+		if input_x > 0.1:
+			target = &"run_right"
+		elif input_x < -0.1:
+			target = &"run_left"
+	elif not on_floor:
+		var wd := _wall_contact_dir()
+		if wd != 0 and velocity.y > 0.0:
+			target = &"wall_slide"
+		elif velocity.y < 0.0:
+			target = &"jump"
+		else:
+			target = &"fall"
+	if _sprite.sprite_frames.has_animation(target) and _sprite.animation != target:
+		_sprite.play(target)
+	elif not _sprite.sprite_frames.has_animation(target) and _sprite.animation != &"idle":
+		_sprite.play(&"idle")
+
+func freeze_for(duration: float) -> void:
+	## 冻结玩家输入与物理，持续 duration 秒。
+	frozen = true
+	velocity = Vector2.ZERO
+	await get_tree().create_timer(duration, false).timeout
+	frozen = false
+
+
+func is_dashing_downward() -> bool:
+	## 供过渡区域检测：冲刺中且方向为纯向下（不允许斜向）。
+	return _dash_active_timer > 0.0 and _dash_dir.y > 0.0 and absf(_dash_dir.x) < 0.01
+
+
+func _ready() -> void:
+	pass
