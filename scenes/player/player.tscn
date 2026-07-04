@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://co1doidegunux" path="res://assets/player/animations/dash/角色-冲刺左右-21x28.png" id="8_je7p5"]
 [ext_resource type="Texture2D" uid="uid://tu32rpgtrmla" path="res://assets/player/animations/idle/角色-待机.png" id="8_qek5x"]
 [ext_resource type="Texture2D" uid="uid://br0wlvt14h6h2" path="res://assets/player/animations/run/角色-行走左侧.png" id="9_h17s1"]
+[ext_resource type="Texture2D" uid="uid://5xxt75qasi3q" path="res://assets/player/animations/角色-砸地.png" id="9_uf5tr"]
 [ext_resource type="Texture2D" uid="uid://cd74hj7jcuhhy" path="res://assets/player/animations/run/角色-行走右侧.png" id="9_walk"]
 [ext_resource type="Texture2D" uid="uid://b2r4xh53txaqv" path="res://assets/player/animations/jump/角色-跳跃.png" id="10_fm80t"]
 [ext_resource type="AudioStream" uid="uid://cr8vmfbij5huq" path="res://assets/audio/Break.ogg" id="13_fcs02"]
@@ -17,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://1jqufv4rtood" path="res://assets/player/animations/光圈.png" id="15_fcs02"]
 [ext_resource type="AudioStream" uid="uid://dgoe8v3ombq4u" path="res://assets/audio/Anchor_Set.ogg" id="16_myrg7"]
 [ext_resource type="AudioStream" uid="uid://bsfog01b1c6x1" path="res://assets/audio/Anchor_Back.ogg" id="17_kvlxm"]
+[ext_resource type="Texture2D" uid="uid://c0pm8wbcqg0rk" path="res://assets/player/animations/猫.png" id="17_lgqa7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
 size = Vector2(11, 16)
@@ -48,6 +50,22 @@ region = Rect2(140, 0, 28, 29)
 [sub_resource type="AtlasTexture" id="AtlasTexture_5mf0n"]
 atlas = ExtResource("8_je7p5")
 region = Rect2(168, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iwuka"]
+atlas = ExtResource("9_uf5tr")
+region = Rect2(21, 0, 21, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hyqqp"]
+atlas = ExtResource("9_uf5tr")
+region = Rect2(42, 0, 21, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ds1xl"]
+atlas = ExtResource("9_uf5tr")
+region = Rect2(63, 0, 21, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1u1sw"]
+atlas = ExtResource("9_uf5tr")
+region = Rect2(84, 0, 21, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_idle0"]
 atlas = ExtResource("8_qek5x")
@@ -196,6 +214,23 @@ animations = [{
 "loop": 1,
 "name": &"dash",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iwuka")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hyqqp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ds1xl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1u1sw")
+}],
+"loop": 1,
+"name": &"down",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -365,6 +400,49 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_2t3bg"]
+atlas = ExtResource("17_lgqa7")
+region = Rect2(0, 0, 22, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jrbya"]
+atlas = ExtResource("17_lgqa7")
+region = Rect2(22, 0, 22, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ahqnk"]
+atlas = ExtResource("17_lgqa7")
+region = Rect2(44, 0, 22, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vb1ce"]
+atlas = ExtResource("17_lgqa7")
+region = Rect2(66, 0, 22, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ncpa"]
+atlas = ExtResource("17_lgqa7")
+region = Rect2(88, 0, 22, 21)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w33q1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2t3bg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jrbya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ahqnk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vb1ce")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0ncpa")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Player" type="CharacterBody2D" unique_id=91519178 groups=["player"]]
 script = ExtResource("1_dovo2")
 
@@ -399,7 +477,8 @@ volume_db = 2.5
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=593624628]
 position = Vector2(0, -6)
 sprite_frames = SubResource("SpriteFrames_7y5es")
-animation = &"run_right"
+animation = &"down"
+frame_progress = 0.31646183
 
 [node name="SFX_Break" type="AudioStreamPlayer" parent="." unique_id=307610398]
 stream = ExtResource("13_fcs02")
@@ -416,11 +495,12 @@ animation = &"light"
 autoplay = "light"
 frame_progress = 0.3362355
 
-[node name="AnchorMarker" type="Sprite2D" parent="." unique_id=1900763186]
-visible = false
+[node name="AnchorMarker" type="AnimatedSprite2D" parent="." unique_id=234442429]
 modulate = Color(1, 0.5, 0, 0.8)
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("15_fcs02")
+position = Vector2(1, 0)
+sprite_frames = SubResource("SpriteFrames_w33q1")
+autoplay = "default"
+frame_progress = 0.19264303
 
 [node name="SFX_Anchor" type="AudioStreamPlayer" parent="." unique_id=987478624]
 stream = ExtResource("16_myrg7")

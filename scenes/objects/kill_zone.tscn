@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://chbkgiuclmaqr"]
+
+[ext_resource type="Script" uid="uid://ymnnip4plult" path="res://scripts/kill_zone.gd" id="1_5gc0p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xf7jd"]
+size = Vector2(1000, 100)
+
+[node name="KillZone" type="Area2D" unique_id=1961482483]
+script = ExtResource("1_5gc0p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2119422129]
+shape = SubResource("RectangleShape2D_xf7jd")
+
+[node name="EditorVisual" type="Polygon2D" parent="." unique_id=231234866]
+color = Color(1, 0, 0, 0.3)
+polygon = PackedVector2Array(-500, -50, 500, -50, 500, 50, -500, 50)

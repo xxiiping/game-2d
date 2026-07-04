@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://oc0263mrq1g5"]
+
+[ext_resource type="Script" uid="uid://d0y0bjyywp0kv" path="res://scripts/breakable_block.gd" id="1_axw6v"]
+[ext_resource type="Texture2D" uid="uid://cheibv466b2uy" path="res://assets/placeholder/E131381FAC3EB1FAB4084A7AAFC811A1.png" id="2_gibwy"]
+
+[sub_resource type="RectangleShape2D" id="phys"]
+size = Vector2(64, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0b0tg"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(0, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e3vvu"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(32, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7vwjx"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(64, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5rlk"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(96, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idm1l"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(128, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3xlgc"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(160, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ujm70"]
+atlas = ExtResource("2_gibwy")
+region = Rect2(192, 0, 32, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7y5es"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0b0tg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e3vvu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7vwjx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5rlk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idm1l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3xlgc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ujm70")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="det"]
+size = Vector2(64, 16)
+
+[node name="BreakableBlock" type="StaticBody2D" unique_id=1936890105]
+rotation = 1.5707964
+script = ExtResource("1_axw6v")
+
+[node name="Shape" type="CollisionShape2D" parent="." unique_id=1589856383]
+shape = SubResource("phys")
+
+[node name="Visual" type="AnimatedSprite2D" parent="." unique_id=1063033568]
+position = Vector2(3.496911e-07, 8)
+rotation = 1.5707964
+sprite_frames = SubResource("SpriteFrames_7y5es")
+
+[node name="Detector" type="Area2D" parent="." unique_id=1242266016]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detector" unique_id=2011467898]
+shape = SubResource("det")

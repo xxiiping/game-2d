@@ -35,7 +35,7 @@ var _dash_dir := Vector2.ZERO  ## 记录最后一次冲刺方向，用于过渡�
 @onready var _sfx_rush02: AudioStreamPlayer = $SFX_Rush02
 @onready var _sfx_break: AudioStreamPlayer = $SFX_Break
 @onready var _sfx_charge: AudioStreamPlayer = $SFX_Charge
-@onready var _anchor_marker: Sprite2D = $AnchorMarker
+@onready var _anchor_marker: AnimatedSprite2D = $AnchorMarker
 @onready var _sfx_anchor: AudioStreamPlayer = $SFX_Anchor
 @onready var _sfx_anchor_back: AudioStreamPlayer = $SFX_AnchorBack
 
@@ -48,7 +48,8 @@ var _heavy_cd := 0.0  ## 重坠冷却，退出后1s内不可再触发
 var _fragile_tilemap: TileMapLayer = null
 var _anchor_position := Vector2.ZERO
 var _has_anchor := false
-var _anchor_instance: Sprite2D = null
+var _anchor_instance: AnimatedSprite2D = null
+var _respawn_position := Vector2.ZERO
 
 
 func _physics_process(delta: float) -> void:
@@ -344,7 +345,7 @@ func _update_run_sfx(_delta: float, input_x: float, on_floor: bool) -> void:
 
 func _update_animation(on_floor: bool, input_x: float) -> void:
 	## 根据玩家状态切换动画。跳跃动画按竖直速度分帧。
-	if frozen:
+	if frozen and _heavy_state != 1:
 		return
 	var target := &"idle"
 	if _dash_active_timer > 0.0:
@@ -355,11 +356,14 @@ func _update_animation(on_floor: bool, input_x: float) -> void:
 		elif input_x < -0.1:
 			target = &"run_left"
 	elif not on_floor:
-		var wd := _wall_contact_dir()
-		if wd != 0 and velocity.y > 0.0:
-			target = &"wall_slide"
+		if _heavy_state == 2:
+			target = &"down"
 		else:
-			target = &"jump"
+			var wd := _wall_contact_dir()
+			if wd != 0 and velocity.y > 0.0:
+				target = &"wall_slide"
+			else:
+				target = &"jump"
 	if _sprite.sprite_frames.has_animation(target) and _sprite.animation != target:
 		_sprite.play(target)
 	elif not _sprite.sprite_frames.has_animation(target) and _sprite.animation != &"idle":
@@ -381,6 +385,20 @@ func _update_animation(on_floor: bool, input_x: float) -> void:
 			_sprite.frame = 4
 	elif _sprite.animation != &"jump":
 		_sprite.speed_scale = 1.0  # 其他动画恢复正常播放
+
+func set_respawn(pos: Vector2) -> void:
+	_respawn_position = pos
+
+
+func respawn() -> void:
+	global_position = _respawn_position
+	velocity = Vector2.ZERO
+	_dash_active_timer = 0.0
+	_dash_grav_lock_timer = 0.0
+	_dash_ctrl_lock_timer = 0.0
+	_heavy_state = 0
+	frozen = false
+
 
 func freeze_for(duration: float) -> void:
 	## 冻结玩家输入与物理，持续 duration 秒。
@@ -411,6 +429,9 @@ func _update_heavy_fall(delta: float) -> void:
 				frozen = true
 				_sfx_charge.play()
 				velocity = Vector2.ZERO
+				# 播放蓄力动画
+				if _sprite.sprite_frames.has_animation(&"down"):
+					_sprite.play(&"down")
 			1:  # 蓄力中
 				_charge_timer += delta
 				if _charge_timer >= 0.5:
@@ -445,7 +466,7 @@ func _handle_recall() -> void:
 		_anchor_position = global_position
 		_has_anchor = true
 		_sfx_anchor.play()
-		_anchor_instance = _anchor_marker.duplicate() as Sprite2D
+		_anchor_instance = _anchor_marker.duplicate() as AnimatedSprite2D
 		_anchor_instance.global_position = global_position
 		_anchor_instance.visible = true
 		_anchor_instance.z_index = 10
@@ -465,6 +486,7 @@ func _handle_recall() -> void:
 
 func _ready() -> void:
 	_anchor_marker.visible = false
+	_respawn_position = global_position
 	var tilemap = get_tree().current_scene.get_node("TileMap")
 	if tilemap:
 		_fragile_tilemap = tilemap.get_node_or_null("break") as TileMapLayer

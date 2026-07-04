@@ -1,7 +1,6 @@
 extends StaticBody2D
 
-## 可破坏方块。玩家冲刺撞击 → 反弹 → 销毁。
-## 旋转实例即可改变方向。
+## 可破坏方块。玩家冲刺撞击 → 反弹 → 播放动画 → 销毁。
 
 @export var bounce_speed := 200.0
 @export var destroy_time := 0.5
@@ -16,7 +15,9 @@ func _ready() -> void:
 
 	$Detector.body_entered.connect(func(b):
 		if _dead or not b is CharacterBody2D: return
-		if b.get(&"_dash_active_timer") == null or b._dash_active_timer <= 0.0: return
+		var is_dashing: bool = b.get(&"_dash_active_timer") != null and b._dash_active_timer > 0.0
+		var is_heavy: bool = b.get(&"_heavy_state") != null and b._heavy_state == 2
+		if not is_dashing and not is_heavy: return
 		_dead = true
 		var away: Vector2 = (b.global_position - global_position).normalized()
 		b.velocity = away * bounce_speed
@@ -27,7 +28,7 @@ func _ready() -> void:
 		b._input_lock_timer = 0.5
 		$Shape.set_deferred(&"disabled", true)
 		$Detector.call_deferred(&"set_monitoring", false)
-		$Anim.play(&"destroy")
+		$Visual.play()
 		await get_tree().create_timer(destroy_time).timeout
 		queue_free()
 	)
