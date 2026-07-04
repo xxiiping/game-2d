@@ -7,12 +7,41 @@
 [ext_resource type="AudioStream" uid="uid://5ij0pw3xju35" path="res://assets/audio/Run-02.ogg" id="6_je7p5"]
 [ext_resource type="AudioStream" uid="uid://b1ua4uf0m34gk" path="res://assets/audio/Rush-01.ogg" id="7_fm80t"]
 [ext_resource type="AudioStream" uid="uid://djsdy881smexa" path="res://assets/audio/Rush-02.ogg" id="8_gx1jg"]
+[ext_resource type="Texture2D" uid="uid://co1doidegunux" path="res://assets/player/animations/dash/角色-冲刺左右-21x28.png" id="8_je7p5"]
 [ext_resource type="Texture2D" uid="uid://tu32rpgtrmla" path="res://assets/player/animations/idle/角色-待机.png" id="8_qek5x"]
 [ext_resource type="Texture2D" uid="uid://br0wlvt14h6h2" path="res://assets/player/animations/idle/角色-行走左侧.png" id="9_h17s1"]
 [ext_resource type="Texture2D" uid="uid://cd74hj7jcuhhy" path="res://assets/player/animations/idle/角色-行走右侧.png" id="9_walk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
-size = Vector2(16, 16)
+size = Vector2(11, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j4nxn"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(0, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_28m0y"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(28, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uniwh"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(56, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iqsei"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(84, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tffgl"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(112, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pk8ii"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(140, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5mf0n"]
+atlas = ExtResource("8_je7p5")
+region = Rect2(168, 0, 28, 29)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_idle0"]
 atlas = ExtResource("8_qek5x")
@@ -118,6 +147,32 @@ region = Rect2(147, 0, 21, 28)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_j4nxn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_28m0y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uniwh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iqsei")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tffgl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pk8ii")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5mf0n")
+}],
+"loop": 1,
+"name": &"dash",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_idle0")
 }, {
 "duration": 1.0,
@@ -211,6 +266,7 @@ animations = [{
 script = ExtResource("1_dovo2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1223435806]
+position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_dovo2")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1544024268]
@@ -240,6 +296,6 @@ volume_db = 2.5
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=593624628]
 position = Vector2(0, -6)
 sprite_frames = SubResource("SpriteFrames_7y5es")
-animation = &"run_left"
+animation = &"dash"
 autoplay = "idle"
-frame_progress = 0.14097634
+frame_progress = 0.24279693
