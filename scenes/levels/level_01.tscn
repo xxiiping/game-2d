@@ -82,6 +82,7 @@ position = Vector2(336, 920)
 
 [node name="BGM" type="AudioStreamPlayer" parent="." unique_id=1232939459]
 stream = ExtResource("8_t0hvh")
+volume_db = -2.0
 autoplay = true
 
 [node name="BreakableBlock" parent="." unique_id=1936890105 instance=ExtResource("8_r72dd")]

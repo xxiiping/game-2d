@@ -1,11 +1,12 @@
 extends StaticBody2D
 
-## 可破坏方块。玩家冲刺撞击 → 反弹 → 播放动画 → 销毁。
+## 可破坏方块。玩家冲刺/重坠撞击 → 反弹 → 播放动画 → 销毁。
 
 @export var bounce_speed := 200.0
 @export var destroy_time := 0.5
 
 var _dead := false
+var _break_sfx: AudioStream = preload("res://assets/audio/breakwall.ogg")
 
 
 func _ready() -> void:
@@ -29,6 +30,17 @@ func _ready() -> void:
 		$Shape.set_deferred(&"disabled", true)
 		$Detector.call_deferred(&"set_monitoring", false)
 		$Visual.play()
+		_play_sfx()
 		await get_tree().create_timer(destroy_time).timeout
 		queue_free()
 	)
+
+
+func _play_sfx() -> void:
+	var sfx := AudioStreamPlayer2D.new()
+	sfx.stream = _break_sfx
+	sfx.global_position = global_position
+	sfx.volume_db = 4
+	get_tree().current_scene.add_child(sfx)
+	sfx.finished.connect(sfx.queue_free)
+	sfx.play()

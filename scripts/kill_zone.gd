@@ -5,6 +5,6 @@ extends Area2D
 func _ready() -> void:
 	$EditorVisual.hide()
 	body_entered.connect(func(b):
-		if b.has_method(&"respawn"):
-			b.respawn()
+		if b.has_method(&"die"):
+			b.die()
 	)
