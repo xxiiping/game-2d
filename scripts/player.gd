@@ -35,13 +35,20 @@ var _dash_dir := Vector2.ZERO  ## 记录最后一次冲刺方向，用于过渡�
 @onready var _sfx_rush02: AudioStreamPlayer = $SFX_Rush02
 @onready var _sfx_break: AudioStreamPlayer = $SFX_Break
 @onready var _sfx_charge: AudioStreamPlayer = $SFX_Charge
+@onready var _anchor_marker: Sprite2D = $AnchorMarker
+@onready var _sfx_anchor: AudioStreamPlayer = $SFX_Anchor
+@onready var _sfx_anchor_back: AudioStreamPlayer = $SFX_AnchorBack
 
 var _run_step := 0
 var _running := false
 var _heavy_state := 0  ## 0=正常, 1=蓄力中, 2=重坠中
 var _charge_timer := 0.0
 var _heavy_fall_time := 0.0  ## 重坠已持续时长
+var _heavy_cd := 0.0  ## 重坠冷却，退出后1s内不可再触发
 var _fragile_tilemap: TileMapLayer = null
+var _anchor_position := Vector2.ZERO
+var _has_anchor := false
+var _anchor_instance: Sprite2D = null
 
 
 func _physics_process(delta: float) -> void:
@@ -69,6 +76,10 @@ func _physics_process(delta: float) -> void:
 	# R 键 / 右摇杆按下 → 重新载入场景
 	if Input.is_action_just_pressed("restart"):
 		get_tree().reload_current_scene()
+
+	# Q 键传送锚
+	if Input.is_action_just_pressed("place"):
+		_handle_recall()
 
 	var grav_locked := _dash_grav_lock_timer > 0.0
 	var ctrl_locked := _dash_ctrl_lock_timer > 0.0
@@ -387,9 +398,14 @@ func is_dashing_downward() -> bool:
 func _update_heavy_fall(delta: float) -> void:
 	## 重坠蓄力+破瓦。frozen 时也要处理，所以独立于 _physics_process 主体。
 
+	if _heavy_cd > 0.0:
+		_heavy_cd -= delta
+
 	if Input.is_action_pressed("heavy_fall"):
 		match _heavy_state:
 			0:  # 开始蓄力
+				if _heavy_cd > 0.0:
+					return
 				_heavy_state = 1
 				_charge_timer = 0.0
 				frozen = true
@@ -417,12 +433,38 @@ func _update_heavy_fall(delta: float) -> void:
 		if Input.is_action_just_pressed("jump"):
 			_heavy_state = 0
 			_set_break_collision(true)
+			_heavy_cd = 1.0
 		elif is_on_floor() and _heavy_fall_time > 0.15:
 			_heavy_state = 0
 			_set_break_collision(true)
+			_heavy_cd = 1.0
+
+
+func _handle_recall() -> void:
+	if not _has_anchor:
+		_anchor_position = global_position
+		_has_anchor = true
+		_sfx_anchor.play()
+		_anchor_instance = _anchor_marker.duplicate() as Sprite2D
+		_anchor_instance.global_position = global_position
+		_anchor_instance.visible = true
+		_anchor_instance.z_index = 10
+		get_tree().current_scene.add_child(_anchor_instance)
+	else:
+		global_position = _anchor_position
+		velocity = Vector2.ZERO
+		_has_anchor = false
+		_sfx_anchor_back.play()
+		if _anchor_instance:
+			_anchor_instance.queue_free()
+			_anchor_instance = null
+		_dash_active_timer = 0.0
+		_dash_grav_lock_timer = 0.0
+		_dash_ctrl_lock_timer = 0.0
 
 
 func _ready() -> void:
+	_anchor_marker.visible = false
 	var tilemap = get_tree().current_scene.get_node("TileMap")
 	if tilemap:
 		_fragile_tilemap = tilemap.get_node_or_null("break") as TileMapLayer

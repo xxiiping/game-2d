@@ -9,12 +9,14 @@
 [ext_resource type="AudioStream" uid="uid://djsdy881smexa" path="res://assets/audio/Rush-02.ogg" id="8_gx1jg"]
 [ext_resource type="Texture2D" uid="uid://co1doidegunux" path="res://assets/player/animations/dash/角色-冲刺左右-21x28.png" id="8_je7p5"]
 [ext_resource type="Texture2D" uid="uid://tu32rpgtrmla" path="res://assets/player/animations/idle/角色-待机.png" id="8_qek5x"]
-[ext_resource type="Texture2D" uid="uid://br0wlvt14h6h2" path="res://assets/player/animations/idle/角色-行走左侧.png" id="9_h17s1"]
-[ext_resource type="Texture2D" uid="uid://cd74hj7jcuhhy" path="res://assets/player/animations/idle/角色-行走右侧.png" id="9_walk"]
+[ext_resource type="Texture2D" uid="uid://br0wlvt14h6h2" path="res://assets/player/animations/run/角色-行走左侧.png" id="9_h17s1"]
+[ext_resource type="Texture2D" uid="uid://cd74hj7jcuhhy" path="res://assets/player/animations/run/角色-行走右侧.png" id="9_walk"]
 [ext_resource type="Texture2D" uid="uid://b2r4xh53txaqv" path="res://assets/player/animations/jump/角色-跳跃.png" id="10_fm80t"]
-[ext_resource type="AudioStream" uid="uid://b71hvwrtyu3xw" path="res://assets/audio/破坏物块 (1).ogg" id="13_gx1jg"]
-[ext_resource type="AudioStream" uid="uid://iuits4h0ygcn" path="res://assets/audio/HoldON.ogg" id="14_ugbui"]
+[ext_resource type="AudioStream" uid="uid://cr8vmfbij5huq" path="res://assets/audio/Break.ogg" id="13_fcs02"]
+[ext_resource type="AudioStream" uid="uid://behivap7pakaf" path="res://assets/audio/HoldON (1).ogg" id="14_fcs02"]
 [ext_resource type="Texture2D" uid="uid://1jqufv4rtood" path="res://assets/player/animations/光圈.png" id="15_fcs02"]
+[ext_resource type="AudioStream" uid="uid://dgoe8v3ombq4u" path="res://assets/audio/Anchor_Set.ogg" id="16_myrg7"]
+[ext_resource type="AudioStream" uid="uid://bsfog01b1c6x1" path="res://assets/audio/Anchor_Back.ogg" id="17_kvlxm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
 size = Vector2(11, 16)
@@ -400,11 +402,11 @@ sprite_frames = SubResource("SpriteFrames_7y5es")
 animation = &"run_right"
 
 [node name="SFX_Break" type="AudioStreamPlayer" parent="." unique_id=307610398]
-stream = ExtResource("13_gx1jg")
+stream = ExtResource("13_fcs02")
 volume_db = -6.0
 
 [node name="SFX_Charge" type="AudioStreamPlayer" parent="." unique_id=310109526]
-stream = ExtResource("14_ugbui")
+stream = ExtResource("14_fcs02")
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="." unique_id=1026478580]
 z_index = -2
@@ -412,4 +414,16 @@ position = Vector2(0, -6)
 sprite_frames = SubResource("SpriteFrames_4kagb")
 animation = &"light"
 autoplay = "light"
-frame_progress = 0.08398209
+frame_progress = 0.3362355
+
+[node name="AnchorMarker" type="Sprite2D" parent="." unique_id=1900763186]
+visible = false
+modulate = Color(1, 0.5, 0, 0.8)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("15_fcs02")
+
+[node name="SFX_Anchor" type="AudioStreamPlayer" parent="." unique_id=987478624]
+stream = ExtResource("16_myrg7")
+
+[node name="SFX_AnchorBack" type="AudioStreamPlayer" parent="." unique_id=1307186799]
+stream = ExtResource("17_kvlxm")
