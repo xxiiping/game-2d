@@ -12,6 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://br0wlvt14h6h2" path="res://assets/player/animations/idle/角色-行走左侧.png" id="9_h17s1"]
 [ext_resource type="Texture2D" uid="uid://cd74hj7jcuhhy" path="res://assets/player/animations/idle/角色-行走右侧.png" id="9_walk"]
 [ext_resource type="Texture2D" uid="uid://b2r4xh53txaqv" path="res://assets/player/animations/jump/角色-跳跃.png" id="10_fm80t"]
+[ext_resource type="AudioStream" uid="uid://b71hvwrtyu3xw" path="res://assets/audio/破坏物块 (1).ogg" id="13_gx1jg"]
+[ext_resource type="AudioStream" uid="uid://iuits4h0ygcn" path="res://assets/audio/HoldON.ogg" id="14_ugbui"]
+[ext_resource type="Texture2D" uid="uid://1jqufv4rtood" path="res://assets/player/animations/光圈.png" id="15_fcs02"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
 size = Vector2(11, 16)
@@ -303,6 +306,63 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_wva7c"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(0, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7obkq"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(28, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vo27k"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(56, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_genst"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(84, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_niom3"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(112, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ttakn"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(140, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rw8a5"]
+atlas = ExtResource("15_fcs02")
+region = Rect2(168, 0, 28, 29)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4kagb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wva7c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7obkq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vo27k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_genst")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_niom3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ttakn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rw8a5")
+}],
+"loop": 1,
+"name": &"light",
+"speed": 5.0
+}]
+
 [node name="Player" type="CharacterBody2D" unique_id=91519178 groups=["player"]]
 script = ExtResource("1_dovo2")
 
@@ -337,7 +397,19 @@ volume_db = 2.5
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=593624628]
 position = Vector2(0, -6)
 sprite_frames = SubResource("SpriteFrames_7y5es")
-animation = &"jump"
-autoplay = "idle"
-frame = 4
-frame_progress = 1.0
+animation = &"run_right"
+
+[node name="SFX_Break" type="AudioStreamPlayer" parent="." unique_id=307610398]
+stream = ExtResource("13_gx1jg")
+volume_db = -6.0
+
+[node name="SFX_Charge" type="AudioStreamPlayer" parent="." unique_id=310109526]
+stream = ExtResource("14_ugbui")
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="." unique_id=1026478580]
+z_index = -2
+position = Vector2(0, -6)
+sprite_frames = SubResource("SpriteFrames_4kagb")
+animation = &"light"
+autoplay = "light"
+frame_progress = 0.08398209
