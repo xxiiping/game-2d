@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://tu32rpgtrmla" path="res://assets/player/animations/idle/角色-待机.png" id="8_qek5x"]
 [ext_resource type="Texture2D" uid="uid://br0wlvt14h6h2" path="res://assets/player/animations/idle/角色-行走左侧.png" id="9_h17s1"]
 [ext_resource type="Texture2D" uid="uid://cd74hj7jcuhhy" path="res://assets/player/animations/idle/角色-行走右侧.png" id="9_walk"]
+[ext_resource type="Texture2D" uid="uid://b2r4xh53txaqv" path="res://assets/player/animations/jump/角色-跳跃.png" id="10_fm80t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
 size = Vector2(11, 16)
@@ -78,6 +79,26 @@ region = Rect2(126, 0, 18, 27)
 [sub_resource type="AtlasTexture" id="AtlasTexture_idle8"]
 atlas = ExtResource("8_qek5x")
 region = Rect2(144, 0, 18, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4hvnv"]
+atlas = ExtResource("10_fm80t")
+region = Rect2(0, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bbmj2"]
+atlas = ExtResource("10_fm80t")
+region = Rect2(28, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxw46"]
+atlas = ExtResource("10_fm80t")
+region = Rect2(56, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8qxvo"]
+atlas = ExtResource("10_fm80t")
+region = Rect2(84, 0, 28, 29)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5q8fn"]
+atlas = ExtResource("10_fm80t")
+region = Rect2(112, 0, 28, 29)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_je7p5"]
 atlas = ExtResource("9_h17s1")
@@ -205,6 +226,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_4hvnv")
+}, {
+"duration": 2.5,
+"texture": SubResource("AtlasTexture_bbmj2")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_kxw46")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_8qxvo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5q8fn")
+}],
+"loop": 0,
+"name": &"jump",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_je7p5")
 }, {
 "duration": 1.0,
@@ -296,6 +337,7 @@ volume_db = 2.5
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=593624628]
 position = Vector2(0, -6)
 sprite_frames = SubResource("SpriteFrames_7y5es")
-animation = &"dash"
+animation = &"jump"
 autoplay = "idle"
-frame_progress = 0.24279693
+frame = 4
+frame_progress = 1.0
