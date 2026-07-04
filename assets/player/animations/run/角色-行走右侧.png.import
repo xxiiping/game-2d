@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1jqufv4rtood"
-path="res://.godot/imported/光圈.png-403193cdf86ab9de05b82e3eb4d1e974.ctex"
+uid="uid://cd74hj7jcuhhy"
+path="res://.godot/imported/角色-行走右侧.png-79d8cbf0694a1bbd649d736e546e0260.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/player/animations/光圈.png"
-dest_files=["res://.godot/imported/光圈.png-403193cdf86ab9de05b82e3eb4d1e974.ctex"]
+source_file="res://assets/player/animations/run/角色-行走右侧.png"
+dest_files=["res://.godot/imported/角色-行走右侧.png-79d8cbf0694a1bbd649d736e546e0260.ctex"]
 
 [params]
 
