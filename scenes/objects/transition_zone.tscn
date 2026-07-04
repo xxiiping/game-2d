@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ci0ybpgk6jyo2" path="res://scripts/transition_zone.gd" id="1_v7u7n"]
 [ext_resource type="AudioStream" uid="uid://c18sn5gh702a" path="res://assets/audio/Anchor-1.ogg" id="2_c1knr"]
 [ext_resource type="AudioStream" uid="uid://bo883liqmtifv" path="res://assets/audio/Anchor-2.ogg" id="3_k3egx"]
-[ext_resource type="AudioStream" uid="uid://bqhtfaajbhoti" path="res://assets/audio/Anchor-3.ogg" id="4_yn3c0"]
+[ext_resource type="AudioStream" uid="uid://283xtlo4r3un" path="res://assets/audio/Anchor-3.ogg" id="4_yn3c0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c1knr"]
 size = Vector2(16, 16)

@@ -164,7 +164,7 @@ func _process_wall_slide(delta: float, input_x: float, cfg: PlayerMovementConfig
 		velocity.y = move_toward(velocity.y, cfg.wall_slide_max, cfg.wall_slide_gravity * delta)
 
 
-func _wall_jump_side(cfg: PlayerMovementConfig) -> int:
+func _wall_jump_side(_cfg: PlayerMovementConfig) -> int:
 	var wd := _wall_contact_dir()
 	if wd != 0:
 		return wd

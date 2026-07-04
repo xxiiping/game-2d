@@ -1,28 +1,35 @@
 # game-2d
 
-Godot 4.7 像素风 2D 平台游戏。核心移动为独立实现（非第三方代码/素材移植）。
-
-## 环境要求
-
-- [Godot 4.7](https://godotengine.org/)（项目当前基于 4.7-stable）
-- 可选：[godot-ai](https://github.com/) MCP 插件（已内置 `addons/godot_ai`，用于编辑器协作）
+Godot 4.7 像素风 2D 平台游戏。原创实现。
 
 ## 快速开始
 
-1. 用 Godot 打开本项目目录
-2. 按 **F5** 运行，主场景为 `scenes/levels/level_01.tscn`
+1. Godot 4.7 打开项目
+2. 按 **F5** 运行
 
 ### 操作
 
-| ⌨ 键盘 | 🎮 PS5 手柄 | 动作 |
+| ⌨ 键盘 | 🎮 PS5 | 动作 |
 |---|---|---|
-| A / D | 左摇杆 / 十字键 | 左右移动 |
-| W / S | 左摇杆 / 十字键 | 上下（冲刺八向） |
-| Space | × (Cross) | 跳跃 |
-| Shift | ○ (Circle) / R1 | 冲刺 |
-| R | 右摇杆按下 (R3) | 重新载入场景 |
+| A / D | 左摇杆 / 十字键 | 移动 |
+| W / S | 左摇杆 / 十字键 | 冲刺方向 |
+| Space | ×(Cross) / △(Triangle) | 跳跃 |
+| Shift | ○(Circle) / □(Square) | 冲刺 |
+| C | R1 | 重坠+破瓦（按住蓄力0.5s） |
+| R | R3 | 重新载入 |
 
-> 详细映射见 [docs/input-map.md](docs/input-map.md)
+> 详见 [docs/input-map.md](docs/input-map.md)
+
+## 核心机制
+
+| 机制 | 说明 |
+|---|---|
+| 平地跳 | 满跳/短跳 + 土狼时间 + 输入缓冲 |
+| 蹬墙跳 | 墙滑 + 链式蹬墙 + 墙土狼 |
+| 八向冲刺 | hitstop + 相机震动 + 转角修正 |
+| 重坠破瓦 | 按住C蓄力→加速下落+破坏脚下脆瓦 |
+| 传送锚 | 重坠落入锚点→静止→瞬移到下层 |
+| 可破坏方块 | 冲刺撞击→反弹→销毁 |
 
 ## 项目结构
 
@@ -30,15 +37,24 @@ Godot 4.7 像素风 2D 平台游戏。核心移动为独立实现（非第三方
 game-2d/
 ├── scenes/
 │   ├── player/player.tscn
-│   └── levels/level_01.tscn
+│   ├── levels/level_01.tscn
+│   └── objects/
+│       ├── transition_zone.tscn
+│       └── breakable_block.tscn
 ├── scripts/
 │   ├── player.gd
+│   ├── global.gd
+│   ├── transition_zone.gd
+│   ├── breakable_block.gd
 │   └── resources/player_movement_config.gd
 ├── resources/movement/player_default.tres
 ├── docs/
-│   ├── movement-params.md      # 玩家移动数值与调参说明
-│   └── input-map.md            # 输入映射（键盘 + 手柄）
-├── assets/placeholder/
+│   ├── movement-params.md
+│   └── input-map.md
+├── assets/
+│   ├── audio/          (BGM + SFX)
+│   ├── player/animations/ (idle/run/jump/dash)
+│   └── placeholder/    (瓦片/背景占位)
 └── addons/godot_ai/
 ```
 
@@ -46,29 +62,15 @@ game-2d/
 
 | 项 | 值 |
 |---|---|
-| 逻辑视口 | 640 × 360 |
-| 窗口显示 | 1280 × 720（整数缩放） |
+| 视口 | 640 × 360 |
+| 窗口 | 1280 × 720 (2x) |
 | 瓦片 | 16 px |
-| 玩家碰撞体 | 16 × 16 |
+| 玩家 | 16 × 16 |
+| 适配 | 720p/1080p/2K/4K 完美整数缩放 |
 
 ## 文档
 
 | 文档 | 内容 |
 |---|---|
-| [docs/movement-params.md](docs/movement-params.md) | 玩家移动：系统设计、调参流程、回归测试、变更记录 |
-| [docs/input-map.md](docs/input-map.md) | 输入映射：键盘 + PS5 手柄绑定 |
-
-移动逻辑在 `scripts/player.gd`；运行时数值来自 `resources/movement/player_default.tres`。字段定义与检查器注释见 `scripts/resources/player_movement_config.gd`。
-
-## 关卡
-
-`level_01.tscn` 使用 `TileMapLayer` 手动画烘焙地形，无运行时关卡生成器。
-
-## 开发约定
-
-- 场景结构优先通过 godot-ai MCP 操作；脚本逻辑直接编辑 `.gd`
-- 阶段验收：`project_run` + `logs_read`，确认无运行时错误
-
-## 许可与边界
-
-- 本项目代码与占位资源为原创实现
+| [docs/movement-params.md](docs/movement-params.md) | 移动设计、调参流程、回归测试 |
+| [docs/input-map.md](docs/input-map.md) | 输入映射 |
