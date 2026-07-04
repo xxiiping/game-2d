@@ -508,6 +508,12 @@ func _ready() -> void:
 	_anchor_marker.visible = false
 	_respawn_position = global_position
 	_death_timer.timeout.connect(respawn)
+	if SaveManager.continue_game:
+		SaveManager.continue_game = false
+		var data := SaveManager.load_save()
+		if not data.is_empty():
+			_respawn_position = Vector2(data.position.x, data.position.y)
+			respawn()
 	var tilemap = get_tree().current_scene.get_node("TileMap")
 	if tilemap:
 		_fragile_tilemap = tilemap.get_node_or_null("break") as TileMapLayer

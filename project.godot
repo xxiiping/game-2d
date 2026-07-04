@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="game-2d"
-run/main_scene="res://scenes/levels/level_01.tscn"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Global="*res://scripts/global.gd"
+SaveManager="*res://scripts/save_manager.gd"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
 
 [display]
