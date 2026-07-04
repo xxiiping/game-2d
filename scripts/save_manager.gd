@@ -9,6 +9,8 @@ var _save_position := Vector2.ZERO
 var _save_timer := 0.0
 var _has_save := false
 var continue_game := false  ## 玩家 _ready 中读取
+var collectible_count := 0
+var _collectible_ui: Label = null
 
 
 func _ready() -> void:
@@ -61,6 +63,7 @@ func _write_save() -> void:
 	var data := {
 		"scene": _current_scene,
 		"position": {"x": _save_position.x, "y": _save_position.y},
+			"collectibles": collectible_count,
 	}
 	f.store_string(JSON.stringify(data))
 
@@ -79,6 +82,17 @@ func load_save() -> Dictionary:
 
 func has_save() -> bool:
 	return _has_save
+
+
+func add_collectible() -> void:
+	collectible_count += 1
+	_update_ui()
+
+
+func _update_ui() -> void:
+	if not _collectible_ui:
+		return
+	_collectible_ui.text = "★ " + str(collectible_count)
 
 
 func reset_save() -> void:

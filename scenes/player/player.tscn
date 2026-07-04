@@ -569,6 +569,8 @@ position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_dovo2")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1544024268]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
 
 [node name="SFX_Jump01" type="AudioStreamPlayer" parent="." unique_id=195531256]
 stream = ExtResource("3_qek5x")

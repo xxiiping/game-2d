@@ -514,6 +514,9 @@ func _ready() -> void:
 		if not data.is_empty():
 			_respawn_position = Vector2(data.position.x, data.position.y)
 			respawn()
+		if data.has("collectibles"):
+			SaveManager.collectible_count = data.collectibles
+			SaveManager._update_ui()
 	var tilemap = get_tree().current_scene.get_node("TileMap")
 	if tilemap:
 		_fragile_tilemap = tilemap.get_node_or_null("break") as TileMapLayer

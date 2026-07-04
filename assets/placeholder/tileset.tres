@@ -1,10 +1,21 @@
 [gd_resource type="TileSet" format=3 uid="uid://cdrsl7nh1vmir"]
 
-[ext_resource type="Texture2D" uid="uid://banqof7hnawwh" path="res://assets/placeholder/tile_placeholder.tres" id="1_tile"]
 [ext_resource type="Texture2D" uid="uid://dwi1qe6pqmp2r" path="res://assets/placeholder/瓦片-黑.png" id="2_j2isb"]
 
+[sub_resource type="Gradient" id="Gradient_7y5es"]
+offsets = PackedFloat32Array(0, 0.058139537)
+colors = PackedColorArray(1, 1, 1, 1, 0.85490197, 0, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8lhun"]
+gradient = SubResource("Gradient_7y5es")
+width = 16
+height = 16
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0, 0)
+metadata/_snap_enabled = true
+
 [sub_resource type="TileSetAtlasSource" id="atlas_0"]
-texture = ExtResource("1_tile")
+texture = SubResource("GradientTexture2D_8lhun")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 

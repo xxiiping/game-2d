@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cukc7k6iqr82f"]
+
+[ext_resource type="Script" uid="uid://dxuamh6pfjtog" path="res://scripts/collectible.gd" id="1_tw2o3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xm3te"]
+
+[node name="Collectible" type="Area2D" unique_id=1556405707]
+script = ExtResource("1_tw2o3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=284438691]
+shape = SubResource("RectangleShape2D_xm3te")
+
+[node name="Visual" type="ColorRect" parent="." unique_id=1718058389]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(1, 0.4, 0.6, 1)
