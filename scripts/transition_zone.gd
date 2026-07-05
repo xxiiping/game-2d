@@ -1,12 +1,7 @@
 extends Area2D
 
-## 下落冲刺触发位置传送锚。
-## 玩家在下落冲刺状态进入此区域 → 静止 4 秒 → 瞬移到目标位置。
-## 附带距离衰减循环音效：700px 内播放，越近越响。
+## 下落冲刺触发传送锚。触发后传送到最近的复活点。
 
-## 传送目标位置（世界坐标）。
-@export var target_position := Vector2.ZERO
-## 音效最大可听距离（px）。
 @export var audio_max_distance := 700.0
 
 var _player: CharacterBody2D = null
@@ -35,7 +30,6 @@ func _process(delta: float) -> void:
 			_do_teleport()
 		return
 
-	# 距离衰减音效
 	var player := _find_player()
 	if player:
 		var dist := global_position.distance_to(player.global_position)
@@ -76,7 +70,15 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _do_teleport() -> void:
-	_player.global_position = target_position
+	var best := Vector2.ZERO
+	var best_dist := INF
+	for cp in get_tree().get_nodes_in_group(&"checkpoint"):
+		var d := _player.global_position.distance_squared_to(cp.global_position)
+		if d < best_dist:
+			best_dist = d
+			best = cp.global_position
+	if best != Vector2.ZERO:
+		_player.global_position = best
 	_player.frozen = false
 	_triggered = false
 	_played_countdown = false

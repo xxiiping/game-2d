@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://djndhiq6gutxj"]
+
+[ext_resource type="Script" uid="uid://ymnnip4plult" path="res://scripts/kill_zone.gd" id="1_vtqrc"]
+[ext_resource type="Texture2D" uid="uid://ccnppwy4tr6ql" path="res://assets/placeholder/截屏2026-07-05 10.22.56.png" id="2_guqvk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xf7jd"]
+size = Vector2(1000, 100)
+
+[node name="KillZone" type="Area2D" unique_id=1961482483]
+z_index = -2
+scale = Vector2(0.3, 1)
+script = ExtResource("1_vtqrc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2119422129]
+shape = SubResource("RectangleShape2D_xf7jd")
+
+[node name="EditorVisual" type="Polygon2D" parent="." unique_id=231234866]
+color = Color(1, 0, 0, 0.3)
+polygon = PackedVector2Array(-500, -50, 500, -50, 500, 50, -500, 50)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1358834687]
+position = Vector2(1.5258789e-05, 0)
+scale = Vector2(124.99999, 8.333333)
+texture = ExtResource("2_guqvk")

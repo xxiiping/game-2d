@@ -51,6 +51,7 @@ var _fragile_tilemap: TileMapLayer = null
 var _anchor_position := Vector2.ZERO
 var _has_anchor := false
 var _anchor_instance: AnimatedSprite2D = null
+var _death_sfx: AudioStream = preload("res://assets/audio/dead.ogg")
 var _respawn_position := Vector2.ZERO
 
 
@@ -407,6 +408,11 @@ func die() -> void:
 	_heavy_state = 0
 	frozen = true
 	velocity = Vector2.ZERO
+	_play_death_sfx()
+	# 分离所有附着的收集品，回到原位
+	for c in get_children():
+		if c.has_method(&"detach"):
+			c.detach()
 	_death_sprite.visible = false
 	if _sprite.sprite_frames.has_animation(&"death"):
 		_sprite.speed_scale = 1.0
@@ -502,6 +508,15 @@ func _handle_recall() -> void:
 		_dash_active_timer = 0.0
 		_dash_grav_lock_timer = 0.0
 		_dash_ctrl_lock_timer = 0.0
+
+
+func _play_death_sfx() -> void:
+	var sfx := AudioStreamPlayer.new()
+	sfx.stream = _death_sfx
+	sfx.volume_db = -2
+	add_child(sfx)
+	sfx.finished.connect(sfx.queue_free)
+	sfx.play()
 
 
 func _ready() -> void:
