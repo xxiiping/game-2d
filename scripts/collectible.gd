@@ -8,6 +8,9 @@ var _target_offset := Vector2(-40, -40)
 var _orig_pos := Vector2.ZERO
 var _orig_parent: Node = null
 
+var _sfx_attach := preload("res://assets/audio/Get-01.ogg")
+var _sfx_collect := preload("res://assets/audio/Get-02.ogg")
+
 
 func _ready() -> void:
 	_orig_pos = global_position
@@ -25,6 +28,7 @@ func _on_body_entered(b: Node2D) -> void:
 	$CollisionShape2D.set_deferred(&"disabled", true)
 	reparent(_player)
 	position = _target_offset
+	_play_sfx(_sfx_attach)
 
 
 func _process(_delta: float) -> void:
@@ -33,11 +37,11 @@ func _process(_delta: float) -> void:
 	position = position.lerp(_target_offset, 0.15)
 	if _player.is_on_floor():
 		SaveManager.add_collectible()
+		_play_sfx(_sfx_collect)
 		queue_free()
 
 
 func detach() -> void:
-	## 玩家死亡时调用：回到原位，恢复碰撞。
 	if not _attached:
 		return
 	_attached = false
@@ -45,3 +49,12 @@ func detach() -> void:
 	global_position = _orig_pos
 	$CollisionShape2D.set_deferred(&"disabled", false)
 	_player = null
+
+
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx := AudioStreamPlayer2D.new()
+	sfx.stream = stream
+	sfx.global_position = global_position
+	get_tree().current_scene.add_child(sfx)
+	sfx.finished.connect(sfx.queue_free)
+	sfx.play()

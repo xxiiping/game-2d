@@ -20,7 +20,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_save_timer += delta
-	if _save_timer >= 30.0:
+	if _save_timer >= 5.0:
 		_save_timer = 0.0
 		auto_save()
 
@@ -49,6 +49,8 @@ func _find_nearest_checkpoint(player: CharacterBody2D) -> Vector2:
 	var best := Vector2.ZERO
 	var best_dist := INF
 	for cp in cps:
+		if cp.global_position.x >= player.global_position.x:
+			continue
 		var d := player.global_position.distance_squared_to(cp.global_position)
 		if d < best_dist:
 			best_dist = d
