@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://btxyfvst4i1jj"]
+
+[ext_resource type="Texture2D" uid="uid://b021g3pe5ie6j" path="res://assets/placeholder/70E7A4F16BF241643CEB06CE00C89116.jpg" id="1"]
+[ext_resource type="AudioStream" uid="uid://cs6co0nn30hc1" path="res://assets/audio/Victory.ogg" id="2"]
+[ext_resource type="Script" uid="uid://bermk0lrew487" path="res://scripts/ending.gd" id="3"]
+[ext_resource type="FontFile" uid="uid://buvy50xoe8ybf" path="res://assets/fusion-pixel-12px-monospaced-zh_hans.ttf" id="4_6t7xl"]
+[ext_resource type="AudioStream" uid="uid://b83y0f6jjc3h7" path="res://assets/audio/lonely.wav" id="5_d0ra4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7y5es"]
+line_spacing = 1.0
+font = ExtResource("4_6t7xl")
+font_size = 12
+
+[node name="Ending" type="Control" unique_id=1637201214]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3")
+
+[node name="Label" type="Label" parent="." unique_id=255230402]
+layout_mode = 0
+offset_left = 463.0
+offset_top = 18.0
+offset_right = 695.0
+offset_bottom = 381.0
+text = "音乐音效
+My_PC ，kirokiro
+
+像素美术
+3/2
+
+立绘美术
+IWET
+
+主程序&关卡玩法策划
+xxiiping
+
+剧情&文本策划
+oldpeasant
+
+程序
+吃素灬食人鱼
+xxiiping
+
+通用美术
+jimmy
+
+
+
+@ 8bit Studio"
+label_settings = SubResource("LabelSettings_7y5es")
+horizontal_alignment = 1
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=481872065]
+
+[node name="TextureRect" type="TextureRect" parent="UI" unique_id=69947906]
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+offset_right = 134.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VictorySFX" type="AudioStreamPlayer" parent="UI" unique_id=720627931]
+stream = ExtResource("2")
+autoplay = true
+
+[node name="LonelyBGM" type="AudioStreamPlayer" parent="UI" unique_id=993356428]
+stream = ExtResource("5_d0ra4")

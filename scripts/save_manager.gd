@@ -10,6 +10,7 @@ var _save_timer := 0.0
 var _has_save := false
 var continue_game := false  ## 玩家 _ready 中读取
 var collectible_count := 0
+var total_collectibles := 0
 var _collectible_ui: Label = null
 
 
@@ -66,6 +67,7 @@ func _write_save() -> void:
 		"scene": _current_scene,
 		"position": {"x": _save_position.x, "y": _save_position.y},
 			"collectibles": collectible_count,
+		"total_collectibles": total_collectibles,
 	}
 	f.store_string(JSON.stringify(data))
 
@@ -89,12 +91,14 @@ func has_save() -> bool:
 func add_collectible() -> void:
 	collectible_count += 1
 	_update_ui()
+	if total_collectibles > 0 and collectible_count >= total_collectibles:
+		get_tree().call_deferred("change_scene_to_file", "res://scenes/ui/ending.tscn")
 
 
 func _update_ui() -> void:
 	if not _collectible_ui:
 		return
-	_collectible_ui.text = "★ " + str(collectible_count)
+	_collectible_ui.text = "★ " + str(collectible_count) + " / " + str(total_collectibles)
 
 
 func reset_save() -> void:

@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## 平台移动控制器。
 ## 机制为独立实现；移动数值从 PlayerMovementConfig 资源读取，逻辑与数据分离。
 
-@export var movement: PlayerMovementConfig = preload("res://resources/movement/player_default.tres")
+var movement: PlayerMovementConfig = preload("res://resources/movement/player_default.tres")
 
 var _facing := 1
 var _coyote_timer := 0.0
@@ -51,6 +51,9 @@ var _fragile_tilemap: TileMapLayer = null
 var _anchor_position := Vector2.ZERO
 var _has_anchor := false
 var _anchor_instance: AnimatedSprite2D = null
+var _cancel_anchor_timer := 0.0
+var _double_tap_timer := 0.0
+var _cancel_sfx := preload("res://assets/audio/click (1).ogg")
 var _death_sfx: AudioStream = preload("res://assets/audio/dead.ogg")
 var _respawn_position := Vector2.ZERO
 
@@ -81,9 +84,8 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("restart"):
 		get_tree().reload_current_scene()
 
-	# Q 键传送锚
-	if Input.is_action_just_pressed("place"):
-		_handle_recall()
+		# Q/L1：长按取消，双击传送，单击放置
+		_update_anchor_input(delta)
 
 	var grav_locked := _dash_grav_lock_timer > 0.0
 	var ctrl_locked := _dash_ctrl_lock_timer > 0.0
@@ -426,6 +428,23 @@ func die() -> void:
 		$DeathTimer.start(1.0)
 
 
+func _cancel_anchor() -> void:
+	_has_anchor = false
+	if _anchor_instance:
+		_anchor_instance.queue_free()
+		_anchor_instance = null
+	_play_click_sfx()
+
+
+func _play_click_sfx() -> void:
+	var sfx := AudioStreamPlayer.new()
+	sfx.stream = _cancel_sfx
+	add_child(sfx)
+	sfx.finished.connect(sfx.queue_free)
+	sfx.play()
+
+
+
 func freeze_for(duration: float) -> void:
 	## 冻结玩家输入与物理，持续 duration 秒。
 	frozen = true
@@ -487,27 +506,52 @@ func _update_heavy_fall(delta: float) -> void:
 			_heavy_cd = 1.0
 
 
-func _handle_recall() -> void:
-	if not _has_anchor:
-		_anchor_position = global_position
-		_has_anchor = true
-		_sfx_anchor.play()
-		_anchor_instance = _anchor_marker.duplicate() as AnimatedSprite2D
-		_anchor_instance.global_position = global_position
-		_anchor_instance.visible = true
-		_anchor_instance.z_index = 10
-		get_tree().current_scene.add_child(_anchor_instance)
+func _update_anchor_input(delta: float) -> void:
+	# 双击计时器
+	if _double_tap_timer > 0.0:
+		_double_tap_timer -= delta
+
+	if Input.is_action_pressed("place"):
+		_cancel_anchor_timer += delta
+		# 长按取消
+		if _has_anchor and _cancel_anchor_timer >= 0.8:
+			_cancel_anchor()
+			_cancel_anchor_timer = 0.0
 	else:
-		global_position = _anchor_position
-		velocity = Vector2.ZERO
-		_has_anchor = false
-		_sfx_anchor_back.play()
-		if _anchor_instance:
-			_anchor_instance.queue_free()
-			_anchor_instance = null
-		_dash_active_timer = 0.0
-		_dash_grav_lock_timer = 0.0
-		_dash_ctrl_lock_timer = 0.0
+		if _cancel_anchor_timer > 0.0 and _cancel_anchor_timer < 0.8:
+			if _has_anchor and _double_tap_timer > 0.0:
+				_teleport_to_anchor()
+				_double_tap_timer = 0.0
+			else:
+				_place_anchor()
+				_double_tap_timer = 0.3
+		_cancel_anchor_timer = 0.0
+
+
+func _place_anchor() -> void:
+	if _has_anchor:
+		return
+	_anchor_position = global_position
+	_has_anchor = true
+	_sfx_anchor.play()
+	_anchor_instance = _anchor_marker.duplicate() as AnimatedSprite2D
+	_anchor_instance.global_position = global_position
+	_anchor_instance.visible = true
+	_anchor_instance.z_index = 10
+	get_tree().current_scene.add_child(_anchor_instance)
+
+
+func _teleport_to_anchor() -> void:
+	global_position = _anchor_position
+	velocity = Vector2.ZERO
+	_has_anchor = false
+	_sfx_anchor_back.play()
+	if _anchor_instance:
+		_anchor_instance.queue_free()
+		_anchor_instance = null
+	_dash_active_timer = 0.0
+	_dash_grav_lock_timer = 0.0
+	_dash_ctrl_lock_timer = 0.0
 
 
 func _play_death_sfx() -> void:

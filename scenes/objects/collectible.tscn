@@ -83,7 +83,8 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Collectible" type="Area2D" unique_id=1556405707]
+[node name="Collectible" type="Area2D" unique_id=1556405707 groups=["collectible"]]
+z_index = -1
 script = ExtResource("1_tw2o3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=284438691]

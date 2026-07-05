@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://d7gau5d60ijj"]
+
+[ext_resource type="Script" uid="uid://e45mang3tqna" path="res://scripts/menu.gd" id="1_wtcfe"]
+[ext_resource type="Texture2D" uid="uid://dyyxwsgcutvds" path="res://assets/menu/23846d060adf87a3693d40bc46f13b62.jpg" id="2_0e48y"]
+[ext_resource type="Texture2D" uid="uid://c4y0x4hmeseh1" path="res://assets/menu/新建画布1.png" id="3_0hol4"]
+[ext_resource type="Texture2D" uid="uid://c7yhe3il3i78a" path="res://assets/menu/w1.png" id="3_4d7sh"]
+[ext_resource type="FontFile" uid="uid://btjjkf6v71cx" path="res://assets/Uranus_Pixel_11Px.ttf" id="3_epypp"]
+[ext_resource type="Texture2D" uid="uid://bbffc07oenng5" path="res://assets/menu/Image_1783222803746_226.png" id="5_ir8iy"]
+[ext_resource type="Texture2D" uid="uid://d16vthngg6vls" path="res://assets/menu/Image_1783171776027_728.png" id="5_kdubu"]
+[ext_resource type="Texture2D" uid="uid://be5m5g15tiw2b" path="res://assets/menu/Image_1783171773613_728.png" id="6_d21ai"]
+[ext_resource type="Texture2D" uid="uid://n4gbrfncunn" path="res://assets/menu/Image_1783222952280_850.png" id="6_hqns4"]
+[ext_resource type="AudioStream" uid="uid://jutvbes37l22" path="res://assets/audio/main.wav" id="10_x6lu4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epypp"]
+
+[node name="Node2D" type="Node2D" unique_id=1546242047]
+script = ExtResource("1_wtcfe")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2074495657]
+size_flags_horizontal = 3
+
+[node name="23846d060Adf87a3693d40Bc46f13b62" type="Sprite2D" parent="ColorRect" unique_id=1075547257]
+position = Vector2(320.52814, 182.50002)
+scale = Vector2(0.34773815, 0.32265624)
+texture = ExtResource("2_0e48y")
+
+[node name="W2" type="Sprite2D" parent="ColorRect/23846d060Adf87a3693d40Bc46f13b62" unique_id=1949093014]
+visible = false
+position = Vector2(-47.530396, -10.847473)
+scale = Vector2(2.8757272, 3.0992737)
+texture = ExtResource("3_4d7sh")
+
+[node name="新建画布1" type="Sprite2D" parent="ColorRect/23846d060Adf87a3693d40Bc46f13b62" unique_id=1857703483]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(424.09705, 214.52899)
+scale = Vector2(9.975434, 8.495802)
+texture = ExtResource("3_0hol4")
+
+[node name="新建画布2" type="Sprite2D" parent="ColorRect/23846d060Adf87a3693d40Bc46f13b62" unique_id=567045082]
+visible = false
+position = Vector2(401.08304, -351.7676)
+scale = Vector2(13.017881, 5.368277)
+texture = ExtResource("3_0hol4")
+
+[node name="W1" type="Sprite2D" parent="ColorRect/23846d060Adf87a3693d40Bc46f13b62" unique_id=2131279377]
+modulate = Color(1, 1, 1, 0.25882354)
+position = Vector2(412.58594, -255.69012)
+scale = Vector2(0.33768004, 0.33768004)
+texture = ExtResource("3_4d7sh")
+
+[node name="Image1783222803746226" type="Sprite2D" parent="ColorRect/23846d060Adf87a3693d40Bc46f13b62" unique_id=1457070438]
+position = Vector2(418.3374, -261.88867)
+scale = Vector2(0.7629875, 0.7629875)
+texture = ExtResource("5_ir8iy")
+
+[node name="Image1783222952280850" type="Sprite2D" parent="ColorRect/23846d060Adf87a3693d40Bc46f13b62" unique_id=1871609802]
+visible = false
+position = Vector2(392.4558, -299.07996)
+scale = Vector2(0.7729228, 0.7729228)
+texture = ExtResource("6_hqns4")
+
+[node name="settings" type="Button" parent="." unique_id=227691623]
+offset_left = 403.00278
+offset_top = 279.0
+offset_right = 540.0028
+offset_bottom = 312.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxEmpty_epypp")
+text = "设置"
+
+[node name="Label" type="Label" parent="." unique_id=1594506946]
+visible = false
+offset_left = 336.70056
+offset_top = 51.07965
+offset_right = 586.70056
+offset_bottom = 101.07965
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 50
+text = "请输入文本"
+
+[node name="play" type="Button" parent="." unique_id=1823920914]
+offset_left = 401.00278
+offset_top = 197.71912
+offset_right = 538.0028
+offset_bottom = 230.71912
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxEmpty_epypp")
+text = "开始游戏"
+
+[node name="continue" type="Button" parent="." unique_id=894570389]
+offset_left = 400.0
+offset_top = 238.0
+offset_right = 540.0
+offset_bottom = 271.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxEmpty_epypp")
+text = "继续游戏"
+
+[node name="exit" type="Button" parent="." unique_id=732496776]
+modulate = Color(1, 1, 1, 0.8666667)
+self_modulate = Color(1, 1, 1, 0.8509804)
+offset_left = 404.00278
+offset_top = 320.0
+offset_right = 541.0028
+offset_bottom = 353.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxEmpty_epypp")
+text = "退出"
+
+[node name="Image1783171776027728" type="Sprite2D" parent="." unique_id=1853404172]
+position = Vector2(245.11087, 237.81259)
+scale = Vector2(0.1327188, 0.1327188)
+texture = ExtResource("5_kdubu")
+
+[node name="Image1783171773613728" type="Sprite2D" parent="." unique_id=777367279]
+position = Vector2(137.11084, 362.81262)
+scale = Vector2(0.23667547, 0.23667543)
+texture = ExtResource("6_d21ai")
+
+[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=414375818]
+stream = ExtResource("10_x6lu4")
+autoplay = true
+
+[connection signal="pressed" from="settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
