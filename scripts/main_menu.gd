@@ -4,6 +4,7 @@ extends Control
 
 func _ready() -> void:
 	$VBox/Continue.disabled = not SaveManager.has_save()
+	$VBox/Start.grab_focus()
 
 
 func _on_start() -> void:

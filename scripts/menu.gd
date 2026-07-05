@@ -2,6 +2,7 @@ extends Node2D
 
 func _ready() -> void:
 	$continue.disabled = not SaveManager.has_save()
+	$play.grab_focus()
 
 
 func _on_play_pressed() -> void:
