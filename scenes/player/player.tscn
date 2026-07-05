@@ -614,8 +614,6 @@ animation = &"light"
 autoplay = "light"
 
 [node name="AnchorMarker" type="AnimatedSprite2D" parent="." unique_id=234442429]
-visible = false
-modulate = Color(1, 0.5, 0, 0.8)
 position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_w33q1")
 autoplay = "default"
