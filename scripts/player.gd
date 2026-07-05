@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## 平台移动控制器。
 ## 机制为独立实现；移动数值从 PlayerMovementConfig 资源读取，逻辑与数据分离。
 
-var movement: PlayerMovementConfig = preload("res://resources/movement/player_default.tres")
+@export var movement: PlayerMovementConfig = preload("res://resources/movement/player_default.tres")
 
 var _facing := 1
 var _coyote_timer := 0.0
@@ -52,7 +52,6 @@ var _anchor_position := Vector2.ZERO
 var _has_anchor := false
 var _anchor_instance: AnimatedSprite2D = null
 var _cancel_anchor_timer := 0.0
-var _double_tap_timer := 0.0
 var _cancel_sfx := preload("res://assets/audio/click (1).ogg")
 var _death_sfx: AudioStream = preload("res://assets/audio/dead.ogg")
 var _respawn_position := Vector2.ZERO
@@ -84,8 +83,8 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("restart"):
 		get_tree().reload_current_scene()
 
-		# Q/L1：长按取消，双击传送，单击放置
-		_update_anchor_input(delta)
+	# Q/L1：单击放置锚，双击传送，长按取消
+	_update_anchor_input(delta)
 
 	var grav_locked := _dash_grav_lock_timer > 0.0
 	var ctrl_locked := _dash_ctrl_lock_timer > 0.0
@@ -428,23 +427,6 @@ func die() -> void:
 		$DeathTimer.start(1.0)
 
 
-func _cancel_anchor() -> void:
-	_has_anchor = false
-	if _anchor_instance:
-		_anchor_instance.queue_free()
-		_anchor_instance = null
-	_play_click_sfx()
-
-
-func _play_click_sfx() -> void:
-	var sfx := AudioStreamPlayer.new()
-	sfx.stream = _cancel_sfx
-	add_child(sfx)
-	sfx.finished.connect(sfx.queue_free)
-	sfx.play()
-
-
-
 func freeze_for(duration: float) -> void:
 	## 冻结玩家输入与物理，持续 duration 秒。
 	frozen = true
@@ -507,24 +489,25 @@ func _update_heavy_fall(delta: float) -> void:
 
 
 func _update_anchor_input(delta: float) -> void:
-	# 双击计时器
-	if _double_tap_timer > 0.0:
-		_double_tap_timer -= delta
+	var prev_timer := _cancel_anchor_timer
 
 	if Input.is_action_pressed("place"):
 		_cancel_anchor_timer += delta
-		# 长按取消
-		if _has_anchor and _cancel_anchor_timer >= 0.8:
+
+		# 长按取消（0.4 秒）—— 达到阈值立即触发，不等待松键
+		if _has_anchor and _cancel_anchor_timer >= 0.4:
 			_cancel_anchor()
-			_cancel_anchor_timer = 0.0
+			_cancel_anchor_timer = -1.0  # 标记已处理，防止松键时误触发
 	else:
-		if _cancel_anchor_timer > 0.0 and _cancel_anchor_timer < 0.8:
-			if _has_anchor and _double_tap_timer > 0.0:
+		_cancel_anchor_timer = 0.0
+
+	# 松键时判定短按（用 prev_timer 避免被 else 清零覆盖）
+	if Input.is_action_just_released("place"):
+		if prev_timer > 0.0 and prev_timer < 0.4:
+			if _has_anchor:
 				_teleport_to_anchor()
-				_double_tap_timer = 0.0
 			else:
 				_place_anchor()
-				_double_tap_timer = 0.3
 		_cancel_anchor_timer = 0.0
 
 
@@ -552,6 +535,19 @@ func _teleport_to_anchor() -> void:
 	_dash_active_timer = 0.0
 	_dash_grav_lock_timer = 0.0
 	_dash_ctrl_lock_timer = 0.0
+
+
+func _cancel_anchor() -> void:
+	_has_anchor = false
+	if _anchor_instance:
+		_anchor_instance.queue_free()
+		_anchor_instance = null
+	var sfx := AudioStreamPlayer.new()
+	sfx.stream = _cancel_sfx
+	add_child(sfx)
+	sfx.finished.connect(sfx.queue_free)
+	sfx.play()
+
 
 
 func _play_death_sfx() -> void:
