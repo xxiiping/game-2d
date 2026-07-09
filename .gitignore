@@ -4,3 +4,48 @@
 .DS_Store
 *.uid
 build/
+
+# Godot — 翻译编译产物
+*.translation
+
+# Godot — 导出配置（包含加密密钥等敏感信息）
+export_presets.cfg
+
+# Godot — 导出后的包体
+*.zip
+*.apk
+*.aab
+
+# Cursor
+.cursor/
+.cursorrules
+
+# Claude / Claude Code
+.claude/
+CLAUDE.md
+
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Linux
+.directory
+.Trash-*
