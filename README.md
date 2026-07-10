@@ -1,8 +1,7 @@
 # Anchor / 回响
 
 > **一款像素风 2D 平台跳跃游戏** · Godot 4.7 · 原创实现  
-> 设计 & 开发：xxiiping · AI 协作：Claude（Anthropic）
-
+> 音乐音效：My_PC ，kirokiro｜像素美术：3/2｜立绘美术：IWET｜主程序&关卡玩法策划：xxiiping｜剧情&文本策划：oldpeasant｜程序：吃素灬食人鱼，xxiiping｜通用美术：jimmy｜@ 8bit Studio｜回响玩家交流群：695384994
 ---
 
 ## 项目简介
